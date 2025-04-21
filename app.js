@@ -15,38 +15,17 @@ mongoose.connect(process.env.MONGO_URL)
 
 // Create Number model
 // Renamed from 'Number' to 'NumberModel' to avoid conflict
+// Update the Number model schema
 const NumberModel = mongoose.model('Number', new mongoose.Schema({
-  value: { type: Number, required: true, min: 10, max: 99 }
+  value: { type: Number, required: true, min: 0, max: 99 }  // Changed min from 10 to 0
 }));
 
-// Update all references in your routes:
-// GET all numbers (existing)
-app.get('/numbers', async (req, res) => {
-    try {
-        const numbers = await NumberModel.find({}, 'value -_id');
-        res.json({ numbers: numbers.map(n => n.value) });
-    } catch (err) {
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-// GET single number by value
-app.get('/numbers/:value', async (req, res) => {
-    try {
-        const number = await NumberModel.findOne({ value: req.params.value });
-        if (!number) return res.status(404).json({ error: 'Number not found' });
-        res.json({ number: number.value });
-    } catch (err) {
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
-// POST (existing)
+// Update all route validations:
 app.post('/numbers', async (req, res) => {
     try {
         const { number } = req.body;
-        if (typeof number !== 'number' || number < 10 || number > 99) {
-            return res.status(400).json({ error: 'Please provide a valid 2-digit number' });
+        if (typeof number !== 'number' || number < 0 || number > 99) {  // Changed from 10 to 0
+            return res.status(400).json({ error: 'Please provide a valid number between 00 and 99' });
         }
         const newNumber = await NumberModel.create({ value: number });
         res.status(201).json({ message: 'Number stored successfully', number: newNumber.value });
@@ -55,12 +34,11 @@ app.post('/numbers', async (req, res) => {
     }
 });
 
-// PUT update number
 app.put('/numbers/:value', async (req, res) => {
     try {
         const { newValue } = req.body;
-        if (typeof newValue !== 'number' || newValue < 10 || newValue > 99) {
-            return res.status(400).json({ error: 'Please provide a valid 2-digit number' });
+        if (typeof newValue !== 'number' || newValue < 0 || newValue > 99) {  // Changed from 10 to 0
+            return res.status(400).json({ error: 'Please provide a valid number between 00 and 99' });
         }
         const updated = await NumberModel.findOneAndUpdate(
             { value: req.params.value },

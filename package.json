@@ -1,0 +1,19 @@
+{
+  "name": "lucky-number-api",
+  "version": "1.0.0",
+  "description": "API for storing 2-digit numbers with MongoDB",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "mongoose": "^8.1.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

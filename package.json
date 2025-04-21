@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": "18.x"
+  },
   "name": "lucky-number-api",
   "version": "1.0.0",
   "description": "API for storing 2-digit numbers with MongoDB",

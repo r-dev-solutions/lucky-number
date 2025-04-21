@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: lucky-number-api
+    env: node
+    buildCommand: npm install
+    startCommand: node app.js
+    envVars:
+      - key: MONGO_URL
+        value: mongodb+srv://caritoprocha:MYPJKrMM9R9che1e@cluster0.iybxy.mongodb.net/loto-db?retryWrites=true&w=majority&appName=Cluster0
+      - key: PORT
+        value: 10000

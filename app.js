@@ -18,14 +18,34 @@ const NumberModel = mongoose.model('Number', new mongoose.Schema({
 }));
 
 // Update all references in your routes:
+// GET all numbers (existing)
+app.get('/numbers', async (req, res) => {
+    try {
+        const numbers = await NumberModel.find({}, 'value -_id');
+        res.json({ numbers: numbers.map(n => n.value) });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// GET single number by value
+app.get('/numbers/:value', async (req, res) => {
+    try {
+        const number = await NumberModel.findOne({ value: req.params.value });
+        if (!number) return res.status(404).json({ error: 'Number not found' });
+        res.json({ number: number.value });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// POST (existing)
 app.post('/numbers', async (req, res) => {
     try {
         const { number } = req.body;
-        
         if (typeof number !== 'number' || number < 10 || number > 99) {
             return res.status(400).json({ error: 'Please provide a valid 2-digit number' });
         }
-        
         const newNumber = await NumberModel.create({ value: number });
         res.status(201).json({ message: 'Number stored successfully', number: newNumber.value });
     } catch (err) {
@@ -33,10 +53,31 @@ app.post('/numbers', async (req, res) => {
     }
 });
 
-app.get('/numbers', async (req, res) => {
+// PUT update number
+app.put('/numbers/:value', async (req, res) => {
     try {
-        const numbers = await NumberModel.find({}, 'value -_id');
-        res.json({ numbers: numbers.map(n => n.value) });
+        const { newValue } = req.body;
+        if (typeof newValue !== 'number' || newValue < 10 || newValue > 99) {
+            return res.status(400).json({ error: 'Please provide a valid 2-digit number' });
+        }
+        const updated = await NumberModel.findOneAndUpdate(
+            { value: req.params.value },
+            { value: newValue },
+            { new: true }
+        );
+        if (!updated) return res.status(404).json({ error: 'Number not found' });
+        res.json({ message: 'Number updated', number: updated.value });
+    } catch (err) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// DELETE number
+app.delete('/numbers/:value', async (req, res) => {
+    try {
+        const deleted = await NumberModel.findOneAndDelete({ value: req.params.value });
+        if (!deleted) return res.status(404).json({ error: 'Number not found' });
+        res.json({ message: 'Number deleted', number: deleted.value });
     } catch (err) {
         res.status(500).json({ error: 'Server error' });
     }

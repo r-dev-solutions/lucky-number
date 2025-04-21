@@ -45,8 +45,8 @@ app.get('/numbers/:value', async (req, res) => {
 app.post('/numbers', async (req, res) => {
     try {
         const { number } = req.body;
-        const numStr = number.toString();
-        if (!/^\d{2}$/.test(numStr) || parseInt(numStr, 10) < 0 || parseInt(numStr, 10) > 99) {
+        const numStr = number.toString().padStart(2, '0'); // Ensure two digits with leading zeros if necessary
+        if (!/^\d{2}$/.test(numStr)) {
             return res.status(400).json({ error: 'Please provide a valid 2-digit number' });
         }
         const newNumber = await NumberModel.create({ value: parseInt(numStr, 10) });

@@ -61,7 +61,7 @@ app.put('/numbers/:value', async (req, res) => {
     try {
         const { newValue } = req.body;
         const newValueStr = newValue.toString();
-        if (!/^\d{2}$/.test(newValueStr) || parseInt(newValueStr) < 10 || parseInt(newValueStr) > 99) {
+        if (!/^\d{2}$/.test(newValueStr) || parseInt(newValueStr) < 0 || parseInt(newValueStr) > 99) {
             return res.status(400).json({ error: 'Please provide a valid 2-digit number' });
         }
         const updated = await NumberModel.findOneAndUpdate(

@@ -46,10 +46,10 @@ app.post('/numbers', async (req, res) => {
     try {
         const { number } = req.body;
         const numStr = number.toString();
-        if (!/^\d{2}$/.test(numStr) || parseInt(numStr) < 0 || parseInt(numStr) > 99) {
+        if (!/^\d{2}$/.test(numStr) || parseInt(numStr, 10) < 0 || parseInt(numStr, 10) > 99) {
             return res.status(400).json({ error: 'Please provide a valid 2-digit number' });
         }
-        const newNumber = await NumberModel.create({ value: parseInt(numStr) });
+        const newNumber = await NumberModel.create({ value: parseInt(numStr, 10) });
         res.status(201).json({ message: 'Number stored successfully', number: newNumber.value });
     } catch (err) {
         res.status(500).json({ error: 'Server error' });
